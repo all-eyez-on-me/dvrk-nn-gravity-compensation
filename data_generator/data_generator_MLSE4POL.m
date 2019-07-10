@@ -8,7 +8,7 @@ coupling_index_list = {[2,3]};
 coupling_upper_limit = [41];
 coupling_lower_limit = [-11];
 
-traj_pivot_points_num = 1000000;
+traj_pivot_points_num = 100000;
 
 s = rng;
 gen_mat = [];
@@ -60,3 +60,4 @@ for i = 1:size(input_mat,2)
     output_mat = [output_mat, (torque_pos+torque_neg)/2];
 end
 
+save('../data/MLSE4POL_Model/MLSE4POL_configs_torques_10000','input_mat','output_mat');
