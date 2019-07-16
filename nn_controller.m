@@ -65,7 +65,7 @@ classdef nn_controller < handle
         % Base controller to calculate the predict torque
         function Torques = base_controller(obj, q, q_dot)
             vel = q_dot;
-            Torques = nn_gravityDynamics(q)
+            Torques = nn_gravityDynamics(q);
             for i =1:6
                 % Set upper and lower torque limit, if output value exceed limits, just keep the limit value for output
                 if Torques(i)>=obj.safe_upper_torque_limit(i)
