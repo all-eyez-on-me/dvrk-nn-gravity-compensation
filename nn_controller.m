@@ -15,15 +15,18 @@ classdef nn_controller < handle
         msg_counter_buffer = 0
         is_disp_init_info = false
         ARM_NAME
+        nn_dynamicModel
     end
 
     methods(Access = public)
         % Class constructor
         function obj = nn_controller(mtm_arm,...
+                nn_dynamicModel,...
                 safe_upper_torque_limit,...
                 safe_lower_torque_limit,...
                 ARM_NAME,...
                 Zero_Output_Joint_No)
+            obj.nn_dynamicModel = nn_dynamicModel;
             obj.safe_upper_torque_limit = safe_upper_torque_limit;
             obj.safe_lower_torque_limit = safe_lower_torque_limit;
             obj.mtm_arm = mtm_arm;
