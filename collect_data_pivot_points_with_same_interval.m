@@ -12,7 +12,7 @@ current_position = [];
 
 config_mat(7,:) = 0.0;
 sample_num = 10;
-steady_time = 0.5;
+steady_time = 0.3;
 
 tic 
 for k= 1:size(config_mat,2)
@@ -24,9 +24,10 @@ for k= 1:size(config_mat,2)
         [current_position(:,k,j), ~, ~] = mtm_arm.get_state_joint_current();
     end
     duration = toc;
-    fprintf('(%d/%d), predict time: %s seconds left', k,size(config_mat,2), datestr(seconds(duration),'HH:MM:SS'))
+    fprintf('(%d/%d), predict time: %s seconds left\n', k,size(config_mat,2), datestr(seconds(duration*(size(config_mat,2)-k)/k),'HH:MM:SS'))
 end
 
 duration = toc;
+duration_time = datestr(seconds(duration),'HH:MM:SS');
 
-save('data/FFNN/pivot_points', 'config_mat');
+save('data/FFNN/collect_data_same_intervals','current_position','desired_effort','duration','duration_time')
