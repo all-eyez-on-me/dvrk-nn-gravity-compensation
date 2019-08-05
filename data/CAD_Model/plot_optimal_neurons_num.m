@@ -6,7 +6,7 @@
 %
 %   input_mat - input data.
 %   output_mat_1 - target data.
-
+pool = parpool
 x = input_mat;
 t = output_mat(5,:);
 
@@ -53,7 +53,7 @@ for i=1:20
     net.trainParam.showWindow = false;
     net.trainParam.showCommandLine = true;
     net.trainParam.max_fail = 4;
-    [net,tr] = train(net,x,t);
+    [net,tr] = train(net,x,t,'useParallel','yes');
 
     % Test the Network
     y = net(x);
