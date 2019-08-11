@@ -1,5 +1,5 @@
-load('CAD_pos_10_e5.mat');
-load('CAD_tor_10_e5.mat');
+load('Real_MTMR_pos_4096.mat');
+load('Real_MTMR_tor_4096.mat');
 input_mat = input_mat(1:6,:);
 output_mat = output_mat(1:6,:);
 
@@ -7,7 +7,7 @@ output_mat = output_mat(1:6,:);
 goal = 1e-6;
 showWindow = true;
 showCommandLine = true;
-max_fail = 10;
+max_fail = 100;
 
 % config network
 optimal_neuron_num = 20; %number of hidden neurons
@@ -65,5 +65,5 @@ for i = 1:joint_num
     net_list{end+1} = net;
 end
 
-save source_domain_CAD_model.mat net_list tr_stop_list
+save target_domain_Real_MTMR_4096_model.mat net_list tr_stop_list
 
