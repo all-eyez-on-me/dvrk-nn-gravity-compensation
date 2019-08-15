@@ -9,7 +9,7 @@ test_input_mat = input_mat(4,:);
 test_output_mat = output_mat(4,:);
 
 
-fixWindowLength = 5;
+fixWindowLength = 8;
 numHiddenUnits = 80;
 maxEpochs = 3000;
 miniBatchSize = 700;
