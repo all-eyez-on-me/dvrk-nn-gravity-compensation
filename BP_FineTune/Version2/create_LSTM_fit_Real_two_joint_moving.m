@@ -19,13 +19,25 @@ train_output_cell = {};
 test_input_cell = {};
 test_output_cell = {};
 
-% cut data into cells with fix window
-for i = 1:size(train_input_mat,2)-fixWindowLength+1
-    train_input_cell = vertcat(train_input_cell, {train_input_mat(:,i:i+fixWindowLength-1)});
-    train_output_cell = vertcat(train_output_cell, {train_output_mat(:,i:i+fixWindowLength-1)});
+% % cut data into cells with fix window
+% for i = 1:size(train_input_mat,2)-fixWindowLength+1
+%     train_input_cell = vertcat(train_input_cell, {train_input_mat(:,i:i+fixWindowLength-1)});
+%     train_output_cell = vertcat(train_output_cell, {train_output_mat(:,i:i+fixWindowLength-1)});
+% end
+
+% cells with repetitive pattern
+input_temp =zeros(6,fixWindowLength);
+output_temp =zeros(6,fixWindowLength);
+for i = 1:size(train_input_mat,2)
+    for j = 1:fixWindowLength
+        input_temp(:,j) = train_input_mat(:,i);
+        output_temp(:,j) = train_output_mat(:,i);
+    end
+    train_input_cell = vertcat(train_input_cell, input_temp);
+    train_output_cell = vertcat(train_output_cell, output_temp);
 end
 
-% cut data into cells with fix window
+% cells with repetitive pattern
 test_input_temp =zeros(6,fixWindowLength);
 test_output_temp =zeros(6,fixWindowLength);
 for i = 1:size(test_input_mat,2)
