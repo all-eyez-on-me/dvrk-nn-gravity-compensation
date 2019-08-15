@@ -9,10 +9,10 @@ test_input_mat = input_mat(1:6,:);
 test_output_mat = output_mat(1:6,:);
 
 
-fixWindowLength = 10;
-numHiddenUnits = 200;
-maxEpochs = 200;
-miniBatchSize = 20;
+fixWindowLength = 8;
+numHiddenUnits = 40;
+maxEpochs = 3000;
+miniBatchSize = 700;
 
 train_input_cell = {};
 train_output_cell = {};
@@ -38,13 +38,19 @@ for i = 1:size(test_input_mat,2)
 end
 
 % data pre-process
-mu = mean([train_input_cell{:}],2);
-sig = std([train_input_cell{:}],0,2);
+mu_input = mean([train_input_cell{:}],2);
+sig_input = std([train_input_cell{:}],0,2);
 
 for i = 1:numel(train_input_cell)
-    train_input_cell{i} = (train_input_cell{i} - mu) ./ sig;
+    train_input_cell{i} = (train_input_cell{i} - mu_input) ./ sig_input;
 end
 
+mu_output = mean([train_output_cell{:}],2);
+sig_output = std([train_output_cell{:}],0,2);
+
+for i = 1:numel(train_output_cell)
+    train_output_cell{i} = (train_output_cell{i} - mu_output) ./ sig_output;
+end
 
 % define LSTM architechture
 numFeatures = size(train_input_cell{1},1);
@@ -78,7 +84,7 @@ for i = 1:numel(YPred)
 end
 
 x= train_input_mat;
-y_predit = y_mat;
+y_predit = y_mat.*sig_output+mu_output;
 y_measure = train_output_mat;
 
 
