@@ -6,10 +6,10 @@ train_output_mat = output_mat(4,:);
 load('./data/Real_traj_test_10/MTMR_28002_traj_test_10_pos.mat');
 load('./data/Real_traj_test_10/MTMR_28002_traj_test_10_tor.mat');
 test_input_mat = input_mat(1:6,:);
-test_output_mat = output_mat(1:6,:);
+test_output_mat = output_mat(4,:);
 
 
-fixWindowLength = 8;
+fixWindowLength = 3;
 numHiddenUnits = 40;
 maxEpochs = 3000;
 miniBatchSize = 700;
@@ -94,6 +94,18 @@ hold on
 scatter(x,y_measure,sz,'k', 'filled');
 plot(x(fixWindowLength:end),y_predit);
 hold off
+
+%%
+for i = 1:numel(test_input_cell)
+    test_input_cell{i} = (test_input_cell{i} - mu_input) ./ sig_input;
+end
+
+YPred = predict(net, test_input_cell,'MiniBatchSize',1);
+y_mat = []
+for i = 1:numel(YPred)
+    y_mat = [y_mat, YPred{i}(:,end).*sig_output+mu_output];
+end
+[abs_RMS_vec, rel_RMS_vec] = RMS(test_output_mat, y_mat)
 % save ./model/CAD/CAD_10_e5_ffnn_model.mat net tr
 
 
