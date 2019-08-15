@@ -9,7 +9,7 @@ test_input_mat = input_mat(4,:);
 test_output_mat = output_mat(4,:);
 
 
-fixWindowLength = 3;
+fixWindowLength = 5;
 numHiddenUnits = 80;
 maxEpochs = 3000;
 miniBatchSize = 700;
@@ -66,7 +66,7 @@ layers = [ ...
 options = trainingOptions('adam', ...
     'MaxEpochs',maxEpochs, ...
     'MiniBatchSize',miniBatchSize, ...
-    'InitialLearnRate',0.1, ...
+    'InitialLearnRate',0.04, ...
     'GradientThreshold',1, ...
     'Shuffle','never', ...
     'Plots','training-progress',...
@@ -88,11 +88,38 @@ y_predit = y_mat.*sig_output+mu_output;
 y_measure = train_output_mat;
 
 
+
+
 sz = 10;
 figure;
 hold on
 scatter(x,y_measure,sz,'k', 'filled');
 plot(x(fixWindowLength:end),y_predit);
+
+% cut data into cells with fix window
+%%
+delta = deg2rad(1);
+center_input_list = min(train_input_mat):delta:max(train_input_mat);
+center_input_cell = {};
+test_input_temp =zeros(1,fixWindowLength);
+
+
+for i = 1:size(center_input_list,2)
+    for j = 1:fixWindowLength
+        test_input_temp(:,j) = center_input_list(:,i);
+    end
+    center_input_cell = vertcat(center_input_cell, test_input_temp);
+end
+for i = 1:numel(center_input_cell)
+    center_input_cell{i} = (center_input_cell{i} - mu_input) ./ sig_input;
+end
+YPred = predict(net, center_input_cell,'MiniBatchSize',1);
+y_mat = [];
+for i = 1:numel(YPred)
+    y_mat = [y_mat, YPred{i}(:,end)];
+end
+y_center_predit = y_mat.*sig_output+mu_output;
+plot(center_input_list,y_center_predit,'r');
 hold off
 % save ./model/CAD/CAD_10_e5_ffnn_model.mat net tr
 
