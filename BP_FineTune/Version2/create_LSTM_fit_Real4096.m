@@ -9,21 +9,34 @@ test_input_mat = input_mat(1:6,:);
 test_output_mat = output_mat(1:6,:);
 
 
-fixWindowLength = 5;
+fixWindowLength = 6;
 numHiddenUnits = 200;
-maxEpochs = 200;
-miniBatchSize = 20;
+maxEpochs = 1000;
+miniBatchSize = 400;
 
 train_input_cell = {};
 train_output_cell = {};
 test_input_cell = {};
 test_output_cell = {};
 
-% cut data into cells with fix window
-for i = 1:size(train_input_mat,2)-fixWindowLength+1
-    train_input_cell = vertcat(train_input_cell, {train_input_mat(:,i:i+fixWindowLength-1)});
-    train_output_cell = vertcat(train_output_cell, {train_output_mat(:,i:i+fixWindowLength-1)});
+% % cut data into cells with fix window
+% for i = 1:size(train_input_mat,2)-fixWindowLength+1
+%     train_input_cell = vertcat(train_input_cell, {train_input_mat(:,i:i+fixWindowLength-1)});
+%     train_output_cell = vertcat(train_output_cell, {train_output_mat(:,i:i+fixWindowLength-1)});
+% end
+
+% cells with repetitive pattern
+input_temp =zeros(6,fixWindowLength);
+output_temp =zeros(6,fixWindowLength);
+for i = 1:size(train_input_mat,2)
+    for j = 1:fixWindowLength
+        input_temp(:,j) = train_input_mat(:,i);
+        output_temp(:,j) = train_output_mat(:,i);
+    end
+    train_input_cell = vertcat(train_input_cell, input_temp);
+    train_output_cell = vertcat(train_output_cell, output_temp);
 end
+
 
 % cut data into cells with fix window
 test_input_temp =zeros(6,fixWindowLength);
