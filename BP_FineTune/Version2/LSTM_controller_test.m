@@ -12,7 +12,7 @@ safe_lower_torque_limit = [
       -0.3
       -0.1
       -0.1
-      0]
+      0];
   GC_init_pos = [ 0
           0
           0
@@ -23,13 +23,12 @@ safe_lower_torque_limit = [
 % % Spawn GC Controllers and test
 load('./model/LSTM/LSTM_fit_4096_dual_add_mlse4pol_sim.mat')
 mtm_arm = mtm('MTMR');
-nn_dynamicModel = @nn_gravityDynamics_pol;
-mtm_gc_controller= nn_controller(mtm_arm,...
+mtm_gc_controller= LSTM_controller(mtm_arm,...
                 net,...
                 safe_upper_torque_limit,...
                 safe_lower_torque_limit,...
                 'MTMR',...
-                fixWindowLength
+                fixWindowLength,...
                 [1]);
 
 

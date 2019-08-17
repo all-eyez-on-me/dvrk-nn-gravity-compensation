@@ -16,7 +16,7 @@ classdef LSTM_controller < handle
         is_disp_init_info = false
         ARM_NAME
         net
-        q_buff_cell
+        q_buff_mat
         Fix_window
     end
 
@@ -30,6 +30,7 @@ classdef LSTM_controller < handle
                 Fix_window,...
                 Zero_Output_Joint_No)
             obj.net = net;
+            obj.q_buff_mat = [];
             obj.Fix_window = Fix_window;
             obj.safe_upper_torque_limit = safe_upper_torque_limit;
             obj.safe_lower_torque_limit = safe_lower_torque_limit;
@@ -71,14 +72,19 @@ classdef LSTM_controller < handle
 
         % Base controller to calculate the predict torque
         function Torques = base_controller(obj, q)
-            if size(obj.q_buff_cell,1)==obj.Fix_window
-                obj.q_buff_cell = vertcat(obj.q_buff_cell(1:end-1,:), {q});
+            q = q(1:6,:);
+            if size(obj.q_buff_mat,2)==obj.Fix_window
+                obj.q_buff_mat = [obj.q_buff_mat(:,2:end) q];
             else
-                obj.q_buff_cell = vertcat(obj.q_buff_cell, {q});
+                obj.q_buff_mat = [obj.q_buff_mat q];
             end
             
-            Torques_cell = predict(obj.net, obj.q_buff_cell, 'MiniBatchSize',1);
-            Torques = Torques_cell{end};
+            input_cell = {obj.q_buff_mat};
+            
+            Torques_cell = predict(obj.net, input_cell, 'MiniBatchSize',1);
+            Torques_mat = Torques_cell{end};
+            Torques = Torques_mat(:,end);
+            Torques(7,:) = 0.0; 
             for i =1:6
                 % Set upper and lower torque limit, if output value exceed limits, just keep the limit value for output
                 if Torques(i)>=obj.safe_upper_torque_limit(i)
