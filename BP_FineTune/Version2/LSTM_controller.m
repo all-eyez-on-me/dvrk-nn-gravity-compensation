@@ -18,6 +18,10 @@ classdef LSTM_controller < handle
         net
         q_buff_mat
         Fix_window
+        mu_input
+        sig_input
+        mu_output 
+        sig_output
     end
 
     methods(Access = public)
@@ -28,6 +32,8 @@ classdef LSTM_controller < handle
                 safe_lower_torque_limit,...
                 ARM_NAME,...
                 Fix_window,...
+                mu_input, sig_input,...
+                mu_output, sig_output,...
                 Zero_Output_Joint_No)
             obj.net = net;
             obj.q_buff_mat = [];
@@ -36,6 +42,10 @@ classdef LSTM_controller < handle
             obj.safe_lower_torque_limit = safe_lower_torque_limit;
             obj.mtm_arm = mtm_arm;
             obj.ARM_NAME = ARM_NAME;
+            obj.mu_input = mu_input;
+            obj.sig_input = sig_input;
+            obj.mu_output =  mu_output;
+            obj.sig_output = sig_output;
             obj.pub_tor = rospublisher(['/dvrk/',ARM_NAME,'/set_effort_joint']);
             obj.sub_pos = rossubscriber(['/dvrk/',ARM_NAME,'/state_joint_current']);
             if exist('Zero_Output_Joint_No')
@@ -73,17 +83,21 @@ classdef LSTM_controller < handle
         % Base controller to calculate the predict torque
         function Torques = base_controller(obj, q)
             q = q(1:6,:);
+            q_input = (q-obj.mu_input)./obj.sig_input;
             if size(obj.q_buff_mat,2)==obj.Fix_window
-                obj.q_buff_mat = [obj.q_buff_mat(:,2:end) q];
+                obj.q_buff_mat = [obj.q_buff_mat(:,2:end) q_input];
             else
-                obj.q_buff_mat = [obj.q_buff_mat q];
+                obj.q_buff_mat = [obj.q_buff_mat q_input];
             end
-            
+         
             input_cell = {obj.q_buff_mat};
             
             Torques_cell = predict(obj.net, input_cell, 'MiniBatchSize',1);
             Torques_mat = Torques_cell{end};
             Torques = Torques_mat(:,end);
+            
+            Torques = Torques.*obj.sig_output+obj.mu_output;
+            
             Torques(7,:) = 0.0; 
             for i =1:6
                 % Set upper and lower torque limit, if output value exceed limits, just keep the limit value for output
