@@ -21,7 +21,8 @@ safe_lower_torque_limit = [
           0
           0]; 
 % % Spawn GC Controllers and test
-load('./model/LSTM/LSTM_fit_4096_dual_add_mlse4pol_sim.mat')
+%load('./model/LSTM/LSTM_fit_4096_dual_add_mlse4pol_sim.mat');
+%load('./model/LSTM/LSTM_fit_4096_dual_add_real_two_joint.mat')
 mtm_arm = mtm('MTMR');
 mtm_gc_controller= LSTM_controller(mtm_arm,...
                 net,...
