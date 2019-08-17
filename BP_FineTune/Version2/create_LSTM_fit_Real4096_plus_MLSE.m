@@ -5,7 +5,7 @@ test_output_cell = {};
 fixWindowLength = 4;
 numHiddenUnits = 100;
 maxEpochs = 3000;
-miniBatchSize = 700;
+miniBatchSize = 2000;
 
 
 [input_cell, output_cell] = load_data('./data/Real_all_couple_4096/Real_MTMR_pos_4096.mat',...
