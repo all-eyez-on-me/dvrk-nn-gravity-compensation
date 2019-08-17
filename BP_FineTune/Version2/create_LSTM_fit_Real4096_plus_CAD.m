@@ -2,7 +2,7 @@ train_input_cell = {};
 train_output_cell = {};
 test_input_cell = {};
 test_output_cell = {};
-fixWindowLength = 4;
+fixWindowLength = 3;
 numHiddenUnits = 100;
 maxEpochs = 3000;
 miniBatchSize = 2000;
@@ -22,13 +22,13 @@ miniBatchSize = 2000;
  train_input_cell = vertcat(train_input_cell,input_cell);
  train_output_cell = vertcat(train_output_cell,output_cell);
 
- [input_cell, output_cell] = load_data('./data/MLSE4POL_sim_10_e5/MLSE4POL_sim_10_e5_pos.mat',...
-                                      './data/MLSE4POL_sim_10_e5/MLSE4POL_sim_10_e5_tor.mat',...
-                                       fixWindowLength,...
-                                       'repeat',...
-                                       1:40000);
- train_input_cell = vertcat(train_input_cell,input_cell);
- train_output_cell = vertcat(train_output_cell,output_cell);
+%  [input_cell, output_cell] = load_data('./data/CAD_sim_1e5/CAD_sim_1e5_pos.mat',...
+%                                       './data/CAD_sim_1e5/CAD_sim_1e5_tor.mat',...
+%                                        fixWindowLength,...
+%                                        'repeat',...
+%                                        1:40000);
+%  train_input_cell = vertcat(train_input_cell,input_cell);
+%  train_output_cell = vertcat(train_output_cell,output_cell);
 
  [input_cell, output_cell] = load_data('./data/Real_traj_test_10/MTMR_28002_traj_test_10_pos.mat',...
                                       './data/Real_traj_test_10/MTMR_28002_traj_test_10_tor.mat',...
@@ -91,4 +91,4 @@ end
 [abs_RMS_vec, rel_RMS_vec] = RMS(test_output_mat, y_mat)
 
 
-save LSTM_fit_4096_dual_add_mlse4pol_sim.mat net fixWindowLength mu_input mu_output sig_input sig_output
+%save LSTM_fit_4096_dual_add_mlse4pol_sim.mat net fixWindowLength mu_input mu_output sig_input sig_output
